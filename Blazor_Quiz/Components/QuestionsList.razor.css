@@ -1,0 +1,23 @@
+﻿﻿.dropZone {
+    border: 2px dashed #bbb;
+    -webkit-border-radius: 5px;
+    border-radius: 5px;
+    padding: 20px;
+    text-align: center;
+    font: 21pt bold arial;
+    color: #bbb;
+}
+
+
+.image-upload > input {
+    display: none;
+}
+
+.image-upload img {
+    width: 80px;
+    cursor: pointer;
+}
+
+
+
+

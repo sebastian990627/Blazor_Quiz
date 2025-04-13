@@ -1,0 +1,15 @@
+﻿@page "/EditQuiz/{QuizId:int}"
+
+<PageTitle>Edycja Quizu</PageTitle>
+
+<div class="card">
+    <div class="card-header h4 d-flex justify-content-between">
+            Edycja @Quiz.Name
+    </div>
+    <div class="card-body">
+        <Blazor_Quiz.Components.QuestionsList Questions="Quiz.Questions" AllowEdit="true" DeleteQuestion="((args)=>DeleteQuestion(args))" UpdateQuestion="((args)=>SaveQuestion(args))"/>
+        <button class="btn btn-primary btn-sm m-2" @onclick="@(()=>AddQuestion())">Dodaj Pytanie</button>
+    </div>
+</div>
+
+

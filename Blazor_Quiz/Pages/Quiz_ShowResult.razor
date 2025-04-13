@@ -1,0 +1,11 @@
+﻿@using Blazor_Quiz_Class
+
+<div class="d-flex justify-content-center">
+    <h3> Twój Wynik To @Result.Score %</h3>
+</div>
+
+@code {
+    [Parameter]
+    public UserQuizResult Result { get; set; } = new();
+
+}

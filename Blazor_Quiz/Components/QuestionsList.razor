@@ -1,0 +1,90 @@
+﻿@using Blazor_Quiz_Class
+@page "/QuestionList"
+
+@foreach (var question in Questions)
+{
+    <div class="row border border-3 m-1 p-1 rounded-3 no-break">
+        <div class="d-flex justify-content-center mb-1 p-2 px-2 border-2 fw-bold border-bottom">
+            <RadzenFormField Text="Pytanie" Variant="Variant.Text" class="w-100">
+                <ChildContent>
+                    <RadzenTextBox @bind-Value="@question.Text" Disabled="!AllowEdit" />
+
+                </ChildContent>
+                <End>
+                    <div class="d-flex gap-2">
+                        <div class="btn btn-primary btn-sm" @onclick=@(()=>Update(question))> Zapisz</div>
+                        <div class="btn btn-danger btn-sm" @onclick=@(()=>Delete(question))> Usuń</div>
+                    </div>
+                </End>
+            </RadzenFormField>
+        </div>
+        <div class="col-4 align-items-center align-items-center d-flex border-end border-2 flex-column">
+            <div>
+                <img src="@question.ImageString" class="w-100" />
+            </div>
+
+                <div @ref="dropZoneElement" class="drop-zone dropZone">
+                    <div class="image-upload" @ref="inputFileContainer">
+                        <label id="Drop_Zone" for="@question.Guid.ToString()">
+                            Wklej, upusć lub wybierz plik
+                        </label>
+                        <InputFile class="form-control" id="@question.Guid.ToString()" OnChange="@((args)=>OnInputFileChange(args,question))" style="display:none" />
+                    </div>
+                </div>
+        </div>
+        <div class="col-8">
+            <RadzenRadioButtonList @bind-Value=@question.CorrectAnswer TValue="string" Orientation=Orientation.Vertical>
+                <Items>
+
+                    <RadzenRadioButtonListItem Value="@("A")">
+                        <Template Context="item">
+                            <RadzenFormField Text="Odpowiedź A" Variant="Variant.Text">
+                                <RadzenTextBox @bind-Value="@question.QuestionA" Disabled="!AllowEdit" />
+                            </RadzenFormField>
+                        </Template>
+                    </RadzenRadioButtonListItem>
+
+                    <RadzenRadioButtonListItem Value="@("B")">
+                        <Template Context="item">
+                            <RadzenFormField Text="Odpowiedź B" Variant="Variant.Text">
+                                <RadzenTextBox @bind-Value="@question.QuestionB" Disabled="!AllowEdit" />
+                            </RadzenFormField>
+                        </Template>
+                    </RadzenRadioButtonListItem>
+
+                    <RadzenRadioButtonListItem Value="@("C")">
+                        <Template Context="item">
+                            <RadzenFormField Text="Odpowiedź C" Variant="Variant.Text">
+                                <RadzenTextBox @bind-Value="@question.QuestionC" Disabled="!AllowEdit" />
+                            </RadzenFormField>
+                        </Template>
+                    </RadzenRadioButtonListItem>
+
+                    <RadzenRadioButtonListItem Value="@("D")">
+                        <Template Context="item">
+                            <RadzenFormField Text="Odpowiedź D" Variant="Variant.Text">
+                                <RadzenTextBox @bind-Value="@question.QuestionD" Disabled="!AllowEdit" />
+                            </RadzenFormField>
+                        </Template>
+                    </RadzenRadioButtonListItem>
+
+                </Items>
+            </RadzenRadioButtonList>
+        </div>
+    </div>
+
+    @if (Questions.Last().Id == question.Id)
+    {
+        <div id="completeLoad"></div>
+    }
+}
+
+
+<div @ref="dropZoneElement" class="drop-zone dropZone" style="display:none">
+    <div class="image-upload" @ref="inputFileContainer">
+        <label id="Drop_Zone" for="yeg">
+            Wklej, upusć lub wybierz plik
+        </label>
+        <InputFile class="form-control" id="yeg" style="display:none" />
+    </div>
+</div>

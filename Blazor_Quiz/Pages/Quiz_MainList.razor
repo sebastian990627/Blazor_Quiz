@@ -1,0 +1,171 @@
+﻿@page "/QuizMain_List/{Type:int}"
+@using Blazor_Quiz.Services
+@using Blazor_Quiz_Class
+
+<div class="card">
+    <div class="card-header d-flex justify-content-between">
+        <div>
+            Lista Quizów
+        </div>
+        <div>
+            @if (Type == 3)
+            {
+                <button type="button" class="btn btn-brand btn-sm" @onclick=@(()=>InsertRow()) title="Dodaj"><i class="fas fa-plus"></i> Dodaj</button>
+            }
+        </div>
+    </div>
+    <div class="card-body m-0 p-0">
+        <RadzenDataGrid @ref=Grid Data="@(Quizes)" TItem="Quiz_Main" AllowFiltering="true" FilterMode="FilterMode.Simple"
+                        AllowSorting="true" FilterCaseSensitivity=FilterCaseSensitivity.CaseInsensitive
+                        PageSize="50" AllowPaging="true" AllowColumnResize="true" RowSelect="((args)=>RowClick(args))"
+                        ColumnWidth="200px" GridLines="DataGridGridLines.Horizontal" RowUpdate="@OnUpdateRow" RowCreate="@OnCreateRow">
+            <Columns>
+                <RadzenDataGridColumn TItem="Quiz_Main" Property="Id" Title="#" Width="75px" />
+                <RadzenDataGridColumn TItem="Quiz_Main" Property="Name" Title="Nazwa Quizu">
+                    <EditTemplate Context="order">
+                        <RadzenTextBox @bind-Value=@order.Name class="w-100" />
+                    </EditTemplate>
+                </RadzenDataGridColumn>
+
+                @if (Type == 3)
+                {
+                    <RadzenDataGridColumn TItem="Quiz_Main" Filterable="false" Sortable="false" TextAlign="TextAlign.Right" Frozen="true" FrozenPosition="FrozenColumnPosition.Right">
+                        <Template Context="order">
+                            <button type="button" class="btn btn-brand btn-sm" @onclick=@(()=>EditRow(order)) title="Edytuj"><i class="fas fa-pen"></i></button>
+                            <button type="button" class="btn btn-danger btn-sm" @onclick=@(()=>DeleteRow(order)) title="Usuń"><i class="fas fa-trash"></i></button>
+                        </Template>
+                        <EditTemplate Context="order">
+                            <button type="button" class="btn btn-brand btn-sm" @onclick=@(()=>SaveRow(order)) title="Zapisz"><i class="fas fa-floppy-disk"></i></button>
+                            <button type="button" class="btn btn-warning btn-sm" @onclick=@(()=>CancelEdit(order)) title="Anuluj"><i class="fas fa-times"></i></button>
+                            <button type="button" class="btn btn-danger btn-sm" @onclick=@(()=>DeleteRow(order)) title="Usuń"><i class="fas fa-save"></i></button>
+                        </EditTemplate>
+                    </RadzenDataGridColumn>
+                }
+            </Columns>
+        </RadzenDataGrid>
+
+    </div>
+</div>
+
+
+@code {
+    [Inject]
+    Quiz_Service QuizService { get; set; } = default!;
+    [Inject]
+    DialogService DialogService { get; set; } = default!;
+    public List<Quiz_Main> Quizes { get; set; } = null!;
+    /// <summary>
+    /// 1-edit-question 2-result 3-edit-quiz
+    /// </summary>
+    [Parameter]
+    public int Type { get; set; } = 1;
+    [Inject]
+    public NavigationManager Nav { get; set; }
+
+    RadzenDataGrid<Quiz_Main> Grid;
+
+    List<Quiz_Main> ordersToInsert = new();
+    List<Quiz_Main> ordersToUpdate = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        var resutQuiz = await QuizService.GetAllQuiz();
+        if (resutQuiz.Succeeded)
+        {
+            Quizes = resutQuiz.Data;
+        }
+    }
+    private void RowClick(Quiz_Main result)
+    {
+        if (Type == 1)
+        {
+            Nav.NavigateTo($"/EditQuiz/{result.Id}");
+            return;
+        }
+        if (Type == 2)
+        {
+            Nav.NavigateTo($"/Complete/{result.Id}");
+            return;
+        }
+
+    }
+
+    #region DataGrid InLineEditing
+    async Task EditRow(Quiz_Main order)
+    {
+        if (ordersToInsert.Count() > 0)
+        {
+            Reset();
+        }
+
+        ordersToUpdate.Add(order);
+        await Grid.EditRow(order);
+    }
+
+    async Task OnUpdateRow(Quiz_Main order)
+    {
+        Reset(order);
+        var result = await QuizService.UpdateQuiz(order.Id, order);
+    }
+
+    async Task SaveRow(Quiz_Main order)
+    {
+        await Grid.UpdateRow(order);
+    }
+
+    void CancelEdit(Quiz_Main order)
+    {
+        Reset(order);
+
+        Grid.CancelEditRow(order);
+    }
+
+    async Task DeleteRow(Quiz_Main order)
+    {
+        Reset(order);
+
+        if (Quizes.Contains(order))
+        {
+            //usuń
+            await Grid.Reload();
+        }
+        else
+        {
+            Grid.CancelEditRow(order);
+            await Grid.Reload();
+        }
+    }
+
+    async Task InsertRow()
+    {
+        Reset();
+        var order = new Quiz_Main();
+        ordersToInsert.Add(order);
+        await Grid.InsertRow(order);
+    }
+
+    async Task OnCreateRow(Quiz_Main order)
+    {
+        var result = await QuizService.CreateQuiz(order);
+        if (!result.Succeeded)
+        {
+            return;
+        }
+        order = result.Data;
+        ordersToInsert.Remove(order);
+    }
+
+    public void Reset()
+    {
+        ordersToInsert.Clear();
+        ordersToUpdate.Clear();
+    }
+
+    public void Reset(Quiz_Main order)
+    {
+        ordersToInsert.Remove(order);
+        ordersToUpdate.Remove(order);
+    }
+    #endregion
+
+}

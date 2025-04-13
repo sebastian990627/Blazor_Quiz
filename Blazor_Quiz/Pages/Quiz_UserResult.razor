@@ -1,0 +1,110 @@
+﻿
+<div class="card">
+    <div class="card-header h4">
+        Twój Wynik To @QuizResult?.Score %
+    </div>
+    <div class="card-body">
+        @if (QuizResult != null)
+        {
+            @foreach (var question in QuizResult.Answers)
+            {
+                <div class="row border border-3 m-1 p-1 rounded-3">
+                    <div class="d-flex justify-content-center mb-1 p-2 px-2 border-2 fw-bold border-bottom">
+                        <RadzenFormField Text="Pytanie" Variant="Variant.Text" class="w-100">
+                            <RadzenTextBox @bind-Value="@question.Question.Text" Disabled="true" />
+                        </RadzenFormField>
+                    </div>
+                    <div class="col-4 align-items-center align-items-center d-flex border-end border-2 flex-column">
+                        <img src="@question.Question.ImageString" class="w-100" />
+                    </div>
+                    <div class="col-8">
+                        <RadzenRadioButtonList @bind-Value=@question.SelectedAnswer TValue="string" Orientation=Orientation.Vertical Disabled="true">
+                            <Items>
+
+                                <RadzenRadioButtonListItem Value="@("A")">
+                                    <Template Context="item">
+                                        @if (question.Question.CorrectAnswer == "A")
+                                        {
+                                            <div class="alert alert-success m-0 p-0">
+                                                <RadzenFormField Text="Odpowiedź A" Variant="Variant.Text">
+                                                    <RadzenTextBox @bind-Value="@question.Question.QuestionA" Disabled="true" />
+                                                </RadzenFormField>
+                                            </div>
+                                        }
+                                        else
+                                        {
+                                            <RadzenFormField Text="Odpowiedź A" Variant="Variant.Text">
+                                                <RadzenTextBox @bind-Value="@question.Question.QuestionA" Disabled="true" />
+                                            </RadzenFormField>
+                                        }
+                                    </Template>
+                                </RadzenRadioButtonListItem>
+
+                                <RadzenRadioButtonListItem Value="@("B")">
+                                    <Template Context="item">
+                                        @if (question.Question.CorrectAnswer == "B")
+                                        {
+                                            <div class="alert alert-success m-0 p-0">
+                                                <RadzenFormField Text="Odpowiedź B" Variant="Variant.Text">
+                                                    <RadzenTextBox @bind-Value="@question.Question.QuestionB" Disabled="true" />
+                                                </RadzenFormField>
+                                            </div>
+                                        }
+                                        else
+                                        {
+                                            <RadzenFormField Text="Odpowiedź B" Variant="Variant.Text">
+                                                <RadzenTextBox @bind-Value="@question.Question.QuestionB" Disabled="true" />
+                                            </RadzenFormField>
+                                        }
+                                    </Template>
+                                </RadzenRadioButtonListItem>
+
+                                <RadzenRadioButtonListItem Value="@("C")">
+                                    <Template Context="item">
+                                        @if (question.Question.CorrectAnswer == "C")
+                                        {
+                                            <div class="alert alert-success m-0 p-0">
+                                                <RadzenFormField Text="Odpowiedź C" Variant="Variant.Text">
+                                                    <RadzenTextBox @bind-Value="@question.Question.QuestionC" Disabled="true" />
+                                                </RadzenFormField>
+                                            </div>
+                                        }
+                                        else
+                                        {
+                                            <RadzenFormField Text="Odpowiedź C" Variant="Variant.Text">
+                                                <RadzenTextBox @bind-Value="@question.Question.QuestionC" Disabled="true" />
+                                            </RadzenFormField>
+                                        }
+                                    </Template>
+                                </RadzenRadioButtonListItem>
+
+                                <RadzenRadioButtonListItem Value="@("D")">
+                                    <Template Context="item">
+                                        @if (question.Question.CorrectAnswer == "D")
+                                        {
+                                            <div class="alert alert-success m-0 p-0">
+                                                <RadzenFormField Text="Odpowiedź D" Variant="Variant.Text">
+                                                    <RadzenTextBox @bind-Value="@question.Question.QuestionD" Disabled="true" />
+                                                </RadzenFormField>
+                                            </div>
+                                        }
+
+                                        else
+                                        {
+                                            <RadzenFormField Text="Odpowiedź D" Variant="Variant.Text">
+                                                <RadzenTextBox @bind-Value="@question.Question.QuestionD" Disabled="true" />
+                                            </RadzenFormField>
+                                        }
+                                    </Template>
+                                </RadzenRadioButtonListItem>
+
+                            </Items>
+                        </RadzenRadioButtonList>
+                    </div>
+                </div>
+
+            }
+        }
+    </div>
+</div>
+

@@ -1,0 +1,40 @@
+﻿@page "/ResultList"
+@using Blazor_Quiz.Services
+@using Blazor_Quiz_Class
+<PageTitle>Wyniki Quizów</PageTitle>
+
+<RadzenDataGrid Data="@(Results)" TItem="UserQuizResult" AllowFiltering="true" FilterMode="FilterMode.Simple"
+                AllowSorting="true" FilterCaseSensitivity=FilterCaseSensitivity.CaseInsensitive
+                PageSize="50" AllowPaging="true" AllowColumnResize="true" RowSelect="((args)=>ShowDialog(args))"
+                ColumnWidth="200px" GridLines="DataGridGridLines.Horizontal">
+    <Columns>
+        <RadzenDataGridColumn TItem="UserQuizResult" Property="Id" Title="#" Width="75px" />
+        <RadzenDataGridColumn TItem="UserQuizResult" Property="UserId" Title="Wykonał" />
+        <RadzenDataGridColumn TItem="UserQuizResult" Property="QuizName" Title="Quiz" />
+        <RadzenDataGridColumn TItem="UserQuizResult" Property="TakenOn" Title="Data Wykonania" />
+        <RadzenDataGridColumn TItem="UserQuizResult" Property="Score" Title="Wynik" />
+     
+    </Columns>
+</RadzenDataGrid>
+
+@code {
+    [Inject]
+    Quiz_Service QuizService { get; set; } = default!;
+    [Inject]
+    DialogService DialogService { get; set; } = default!;
+    public List<UserQuizResult> Results { get; set; } = null!;
+    protected override async Task OnInitializedAsync()
+    {
+        var resutQuiz = await QuizService.GetAllResultsAsync();
+        if (resutQuiz.Succeeded)
+        {
+            Results = resutQuiz.Data;         
+        }
+    }
+    private async Task ShowDialog(UserQuizResult result)
+    {
+        var a = await DialogService.OpenAsync<Quiz_UserResult>($"Pogląd",
+        new Dictionary<string, object>() { { "ResultId", result.Id } },
+        new DialogOptions() { Width = "calc(80%)", Height = "calc(80%)", Top = "calc(5%)", Style = "animation: crescendo 0.2s alternate infinite ease-in;animation-iteration-count: 1; @keyframes crescendo {0% {transform: scale(.01);}100% {transform: scale(1.0);}}" });
+    }
+}
