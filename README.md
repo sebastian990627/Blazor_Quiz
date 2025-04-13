@@ -1,1 +1,1 @@
-Quiz w blazor przenienicony na publiczne repoztytorium
+Quiz w blazor przenieniesiony na publiczne repoztytorium
